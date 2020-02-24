@@ -17,17 +17,17 @@ var (
 Resize i3 current focused window with pixel settings.
 
 Usage:
-  i3re [options] -w <px> -h <px>
-  i3re [options] -w <px>
-  i3re [options] -h <px>
+  i3re [options] -w <percent> -h <percent>
+  i3re [options] -w <percent>
+  i3re [options] -h <percent>
   i3re -h | --help
   i3re --version
 
 Options:
-  -w --width <px>   Resize window to specified width.
-  -h --height <px> Resize window to specified height.  
-  --help            Show this screen.
-  --version         Show version.
+  -w --width <percent>   Resize window to specified width.
+  -h --height <percent>  Resize window to specified height.
+  --help                 Show this screen.
+  --version              Show version.
 `
 )
 
@@ -120,13 +120,11 @@ func resize(
 
 func getResizeCommand(
 	direction string,
-	workspaceValue float64,
-	windowValue float64,
-	needValue float64,
+	workspaceSize float64,
+	windowSize float64,
+	needPercent float64,
 ) string {
-	windowPercent := 100 * windowValue / workspaceValue
-	needPercent := 100 * float64(needValue) / float64(workspaceValue)
-
+	windowPercent := (100 * windowSize) / workspaceSize
 	ppt := needPercent - windowPercent
 
 	op := "grow"
@@ -136,8 +134,8 @@ func getResizeCommand(
 	}
 
 	command := fmt.Sprintf(
-		"resize %s %s 1 px or %d ppt",
-		op, direction, int64(ppt),
+		"resize %s %s %d px or %d ppt",
+		op, direction, int64(ppt), int64(ppt),
 	)
 
 	return command
